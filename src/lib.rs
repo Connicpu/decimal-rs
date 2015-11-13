@@ -1,7 +1,7 @@
 extern crate num;
 use num::BigInt;
 use num::bigint::ToBigInt;
-use num::bigint::{Sign, BigDigit, DoubleBigDigit, big_digit};
+use num::bigint::{Sign, BigDigit};
 use num::rational::{Ratio, BigRational};
 use num::traits::{ToPrimitive};
 
