@@ -26,7 +26,7 @@ impl Decimal {
     }
 
     /// Constructs a number representing `value * 10^(-inv_exp)`
-    /// Fails if value is larger than 96-bits
+    /// Fails if value is larger than 96 bits
     pub fn from_bigint(value: &BigInt, inverse_exponent: u8) -> Option<Decimal> {
         let (sign, bytes) = value.to_bytes_le();
         if bytes.len() > 12 {
@@ -39,6 +39,8 @@ impl Decimal {
             mantissa: [0; 3],
         };
 
+        // Shift all of the bytes into the mantissa
+        // to_bytes_le() guarantees them to be in little endian
         for (i, x) in bytes.into_iter().enumerate() {
             let shift = (i as BigDigit % 4) * 8;
             let byte_val = x as BigDigit;
@@ -46,6 +48,8 @@ impl Decimal {
             value.mantissa[i / 4] |= shifted;
         }
 
+        // swap the bytes if we're on a big-endian system
+        // this should be optimized to a no-op on little-endian systems
         for val in value.mantissa.iter_mut() {
             *val = u32::from_le(*val);
         }
@@ -54,6 +58,7 @@ impl Decimal {
     }
 
     pub fn to_bigrational(&self) -> BigRational {
+        // The value is sign*mantissa/(10^inv_exp)
         Ratio::new_raw(
             BigInt::from_slice(self.sign, &self.mantissa),
             num::pow(10u32.to_bigint().unwrap(), self.inv_exp as usize)
