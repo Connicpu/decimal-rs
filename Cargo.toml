@@ -1,0 +1,8 @@
+[package]
+name = "decimal"
+version = "0.1.0"
+authors = ["Connor Hilarides <connorcpu@live.com>"]
+description = "A large precision base10 floating point number similar to C#'s decimal"
+
+[dependencies]
+num = "*"
